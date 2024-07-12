@@ -1,27 +1,30 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using oClock.MVC.Infrastructure;
 
 namespace oClock.MVC.Controllers;
 
-
 public class WorklogController : Controller
 {
     private readonly JiraDbContext _context;
+    private readonly List<QualificationGroup> _qualificationGroups;
 
-    public WorklogController(JiraDbContext context)
+    public WorklogController(JiraDbContext context, IConfiguration configuration)
     {
         _context = context;
+        var json = System.IO.File.ReadAllText("qualificationGroups.json");
+        _qualificationGroups = JsonConvert.DeserializeObject<List<QualificationGroup>>(json);
     }
 
     public IActionResult Index(DateTime? startDate, DateTime? endDate, string author)
     {
         if (!startDate.HasValue)
         {
-            startDate = new DateTime(DateTime.Now.Year, 1, 1);
+            startDate = new DateTime(DateTime.Now.Year, 1, 1); // Początek roku
         }
         if (!endDate.HasValue)
         {
-            endDate = DateTime.Now;
+            endDate = DateTime.Now; // Dziś
         }
 
         var worklogs = _context.Worklogs
@@ -58,6 +61,7 @@ public class WorklogController : Controller
         ViewBag.IndividualData = selectedAuthorData;
         ViewBag.Authors = authors;
         ViewBag.SelectedAuthor = author;
+        ViewBag.QualificationGroups = _qualificationGroups;
 
         return View();
     }

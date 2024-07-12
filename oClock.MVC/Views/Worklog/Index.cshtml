@@ -6,6 +6,7 @@
     var individualData = ViewBag.IndividualData;
     var authors = ViewBag.Authors as List<string>;
     var selectedAuthor = ViewBag.SelectedAuthor as string;
+    var qualificationGroups = ViewBag.QualificationGroups as List<QualificationGroup>;
 }
 
 <h1>Worklog Analysis</h1>
@@ -22,6 +23,7 @@
 <table>
     <thead>
         <tr>
+            <th>Group</th>
             <th>Qualification</th>
             <th>Total Hours</th>
             <th>Percentage</th>
@@ -30,10 +32,12 @@
     <tbody>
         @foreach (var item in teamData)
         {
+            var group = qualificationGroups.FirstOrDefault(g => g.Symbols.Contains(item.Qualification));
             <tr>
+                <td>@group?.GroupName</td>
                 <td>@item.Qualification</td>
-                <td>@item.TotalHours</td>
-                <td>@item.Percentage %</td>
+                <td>@Math.Round(item.TotalHours, 2)</td>
+                <td>@Math.Round(item.Percentage, 2) %</td>
             </tr>
         }
     </tbody>
@@ -61,6 +65,7 @@
     <table>
         <thead>
             <tr>
+                <th>Group</th>
                 <th>Qualification</th>
                 <th>Total Hours</th>
                 <th>Percentage</th>
@@ -69,10 +74,12 @@
         <tbody>
             @foreach (var item in individualData)
             {
+                var group = qualificationGroups.FirstOrDefault(g => g.Symbols.Contains(item.Qualification));
                 <tr>
+                    <td>@group?.GroupName</td>
                     <td>@item.Qualification</td>
-                    <td>@item.TotalHours</td>
-                    <td>@item.Percentage %</td>
+                    <td>@Math.Round(item.TotalHours, 2)</td>
+                    <td>@Math.Round(item.Percentage, 2) %</td>
                 </tr>
             }
         </tbody>

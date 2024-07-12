@@ -1,0 +1,18 @@
+﻿[
+  {
+    "GroupName": "Produktywne",
+    "Symbols": ["RP", "R"]
+  },
+  {
+    "GroupName": "Wsparciowe",
+    "Symbols": ["HD"]
+  },
+  {
+    "GroupName": "Rozwojowe",
+    "Symbols": ["SZ"]
+  },
+  {
+    "GroupName": "Nieproduktywne",
+    "Symbols": ["W"]
+  }
+]

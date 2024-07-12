@@ -17,14 +17,14 @@ public class JiraDbContext : DbContext
         base.OnModelCreating(modelBuilder);
         modelBuilder.Entity<Worklog>(entity =>
         {
-            entity.ToTable("X_JIRA_WORKLOG"); // upewnij się, że nazwa tabeli jest poprawna
+            entity.ToTable("X_JIRA_WORKLOG");
             
             entity.Property(e => e.Ref).HasColumnName("REF");
             entity.Property(e => e.Author).HasColumnName("AUTHOR").HasMaxLength(1024);
             entity.Property(e => e.Project).HasColumnName("PROJECT").HasMaxLength(1024);
             entity.Property(e => e.Issue).HasColumnName("ISSUE").HasMaxLength(1024);
             entity.Property(e => e.IssueSummary).HasColumnName("ISSUESUMMARY").HasMaxLength(1024);
-            entity.Property(e => e.Qualification).HasColumnName("QUALIFICATION").HasConversion<string>();;
+            entity.Property(e => e.Qualification).HasColumnName("QUALIFICATION").HasMaxLength(1024);;
             entity.Property(e => e.TimeSpent).HasColumnName("TIMESPENT").HasColumnType("DOUBLE PRECISION");
             entity.Property(e => e.WorklogDate).HasColumnName("WORKLOGDATE").HasColumnType("DATE");
             entity.Property(e => e.WorklogStart).HasColumnName("WORKLOGSTART").HasColumnType("TIMESTAMP");
