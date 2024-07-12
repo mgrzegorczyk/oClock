@@ -15,7 +15,6 @@ public class WorklogController : Controller
         var json = System.IO.File.ReadAllText("qualificationGroups.json");
         _qualificationGroups = JsonConvert.DeserializeObject<List<QualificationGroup>>(json);
     }
-
     public IActionResult Index(DateTime? startDate, DateTime? endDate, string author)
     {
         if (!startDate.HasValue)
@@ -26,6 +25,7 @@ public class WorklogController : Controller
         {
             endDate = DateTime.Now; // Dziś
         }
+        
 
         var worklogs = _context.Worklogs
             .Where(w => w.WorklogDate >= startDate && w.WorklogDate <= endDate)
@@ -33,17 +33,19 @@ public class WorklogController : Controller
 
         var authors = worklogs.Select(w => w.Author).Distinct().ToList();
 
+        var totalHours = worklogs.Sum(w => w.TimeSpent);
         var teamData = worklogs.GroupBy(w => w.Qualification)
             .Select(g => new 
             {
                 Qualification = g.Key,
                 TotalHours = g.Sum(w => w.TimeSpent),
-                Percentage = g.Sum(w => w.TimeSpent) / worklogs.Sum(w => w.TimeSpent) * 100
-            }).ToList();
+                Percentage = totalHours > 0 ? (g.Sum(w => w.TimeSpent) / totalHours) * 100 : 0
+            }).ToList<dynamic>();
 
         List<dynamic> selectedAuthorData = new List<dynamic>();
         if (!string.IsNullOrEmpty(author))
         {
+            var authorTotalHours = worklogs.Where(w => w.Author == author).Sum(w => w.TimeSpent);
             selectedAuthorData = worklogs
                 .Where(w => w.Author == author)
                 .GroupBy(w => w.Qualification)
@@ -51,7 +53,7 @@ public class WorklogController : Controller
                 {
                     Qualification = g.Key,
                     TotalHours = g.Sum(w => w.TimeSpent),
-                    Percentage = g.Sum(w => w.TimeSpent) / worklogs.Where(w => w.Author == author).Sum(w => w.TimeSpent) * 100
+                    Percentage = authorTotalHours > 0 ? (g.Sum(w => w.TimeSpent) / authorTotalHours) * 100 : 0
                 }).ToList<dynamic>();
         }
 

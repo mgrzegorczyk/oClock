@@ -2,8 +2,8 @@
     ViewData["Title"] = "Worklog Analysis";
     var startDate = ViewBag.StartDate;
     var endDate = ViewBag.EndDate;
-    var teamData = ViewBag.TeamData;
-    var individualData = ViewBag.IndividualData;
+    var teamData = ViewBag.TeamData as List<dynamic>;
+    var individualData = ViewBag.IndividualData as List<dynamic>;
     var authors = ViewBag.Authors as List<string>;
     var selectedAuthor = ViewBag.SelectedAuthor as string;
     var qualificationGroups = ViewBag.QualificationGroups as List<QualificationGroup>;
@@ -20,68 +20,84 @@
 </form>
 
 <h2>Team Data</h2>
-<table>
-    <thead>
-        <tr>
-            <th>Group</th>
-            <th>Qualification</th>
-            <th>Total Hours</th>
-            <th>Percentage</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in teamData)
+@if (teamData != null && qualificationGroups != null)
+{
+    @foreach (var group in qualificationGroups)
+    {
+        var groupData = teamData.Where(td => group.Symbols.Contains((string)td.Qualification));
+        if (groupData.Any())
         {
-            var group = qualificationGroups.FirstOrDefault(g => g.Symbols.Contains(item.Qualification));
-            <tr>
-                <td>@group?.GroupName</td>
-                <td>@item.Qualification</td>
-                <td>@Math.Round(item.TotalHours, 2)</td>
-                <td>@Math.Round(item.Percentage, 2) %</td>
-            </tr>
+            <h3>@group.GroupName</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Qualification</th>
+                        <th>Total Hours</th>
+                        <th>Percentage</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in groupData)
+                    {
+                        <tr>
+                            <td>@item.Qualification</td>
+                            <td>@Math.Round((double)item.TotalHours, 2)</td>
+                            <td>@Math.Round((double)item.Percentage, 2) %</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
         }
-    </tbody>
-</table>
+    }
+}
 
 <label for="author">Author:</label>
 <select id="author" name="author" onchange="document.getElementById('filterForm').submit();" form="filterForm">
     <option value="">-- Select Author --</option>
-    @foreach (var author in authors)
+    @if (authors != null)
     {
-        if (author == selectedAuthor)
+        @foreach (var author in authors)
         {
-            <option value="@author" selected="selected">@author</option>
-        }
-        else
-        {
-            <option value="@author">@author</option>
+            if (author == selectedAuthor)
+            {
+                <option value="@author" selected="selected">@author</option>
+            }
+            else
+            {
+                <option value="@author">@author</option>
+            }
         }
     }
 </select>
 
-@if (!string.IsNullOrEmpty(selectedAuthor))
+@if (!string.IsNullOrEmpty(selectedAuthor) && individualData != null && qualificationGroups != null)
 {
     <h2>Individual Data for @selectedAuthor</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Group</th>
-                <th>Qualification</th>
-                <th>Total Hours</th>
-                <th>Percentage</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in individualData)
-            {
-                var group = qualificationGroups.FirstOrDefault(g => g.Symbols.Contains(item.Qualification));
-                <tr>
-                    <td>@group?.GroupName</td>
-                    <td>@item.Qualification</td>
-                    <td>@Math.Round(item.TotalHours, 2)</td>
-                    <td>@Math.Round(item.Percentage, 2) %</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    @foreach (var group in qualificationGroups)
+    {
+        var groupData = individualData.Where(id => group.Symbols.Contains((string)id.Qualification));
+        if (groupData.Any())
+        {
+            <h3>@group.GroupName</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Qualification</th>
+                        <th>Total Hours</th>
+                        <th>Percentage</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in groupData)
+                    {
+                        <tr>
+                            <td>@item.Qualification</td>
+                            <td>@Math.Round((double)item.TotalHours, 2)</td>
+                            <td>@Math.Round((double)item.Percentage, 2) %</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    }
 }
