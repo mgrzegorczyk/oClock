@@ -1,14 +1,10 @@
-using Microsoft.EntityFrameworkCore;
-using oClock.MVC.Infrastructure;
+using oClock.MVC.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 
-var connectionString = builder.Configuration.GetConnectionString("JiraDatabase");
-
-builder.Services.AddDbContext<JiraDbContext>(options =>
-    options.UseFirebird(connectionString));
+builder.Services.AddJiraDatabase(builder.Configuration);
 
 var app = builder.Build();
 
