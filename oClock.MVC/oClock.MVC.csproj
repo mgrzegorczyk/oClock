@@ -7,7 +7,19 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Data\" />
+      <PackageReference Include="FirebirdSql.Data.FirebirdClient" Version="10.3.1" />
+      <PackageReference Include="FirebirdSql.EntityFrameworkCore.Firebird" Version="11.0.0" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.7" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.7">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="Data\JIRAANALYZER.FDB">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
 </Project>

@@ -1,0 +1,80 @@
+﻿@{
+    ViewData["Title"] = "Worklog Analysis";
+    var startDate = ViewBag.StartDate;
+    var endDate = ViewBag.EndDate;
+    var teamData = ViewBag.TeamData;
+    var individualData = ViewBag.IndividualData;
+    var authors = ViewBag.Authors as List<string>;
+    var selectedAuthor = ViewBag.SelectedAuthor as string;
+}
+
+<h1>Worklog Analysis</h1>
+
+<form method="get" id="filterForm">
+    <label for="startDate">Start Date:</label>
+    <input type="date" id="startDate" name="startDate" value="@startDate" onchange="document.getElementById('filterForm').submit();">
+    <label for="endDate">End Date:</label>
+    <input type="date" id="endDate" name="endDate" value="@endDate" onchange="document.getElementById('filterForm').submit();">
+    <button type="submit" style="display: none;">Filter</button>
+</form>
+
+<h2>Team Data</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Qualification</th>
+            <th>Total Hours</th>
+            <th>Percentage</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in teamData)
+        {
+            <tr>
+                <td>@item.Qualification</td>
+                <td>@item.TotalHours</td>
+                <td>@item.Percentage %</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<label for="author">Author:</label>
+<select id="author" name="author" onchange="document.getElementById('filterForm').submit();" form="filterForm">
+    <option value="">-- Select Author --</option>
+    @foreach (var author in authors)
+    {
+        if (author == selectedAuthor)
+        {
+            <option value="@author" selected="selected">@author</option>
+        }
+        else
+        {
+            <option value="@author">@author</option>
+        }
+    }
+</select>
+
+@if (!string.IsNullOrEmpty(selectedAuthor))
+{
+    <h2>Individual Data for @selectedAuthor</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Qualification</th>
+                <th>Total Hours</th>
+                <th>Percentage</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in individualData)
+            {
+                <tr>
+                    <td>@item.Qualification</td>
+                    <td>@item.TotalHours</td>
+                    <td>@item.Percentage %</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
